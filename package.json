@@ -1,0 +1,24 @@
+{
+  "name": "hratx35-mvp-project",
+  "version": "1.0.0",
+  "description": "js virtual turing machine",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server-dev": "nodemon server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Grindstaffr/hratx35-MVP-project.git"
+  },
+  "author": "Russell Grindstaff",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Grindstaffr/hratx35-MVP-project/issues"
+  },
+  "homepage": "https://github.com/Grindstaffr/hratx35-MVP-project#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3"
+  }
+}
