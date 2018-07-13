@@ -1,23 +1,155 @@
-var NOT  = function () {
+// Complete answer on top of last buffer passed in 
+//("A" on single arg functions, 'B' on dual arg functions)
+//Head MUST NEEDS be moved to the start of the buffer before 
+//    the response is passed to returnMemBuffer   
+//  
+// All functions should reset used buffers before returning out
+// All functions may use any additional buffers to perform calcualtions
+// 
+// DO NOT leave data in buffers, as we make the assumption that buffers
+//       are empty before calling any function
+// 
+var NOT  = function () { 
+
     var oneNotShiftLeft = function () {
+        //flip bits
         if(getCurrentHeadValue()){
-            memoryBufferA[getCurrentHeadLocation[1]] = 0;
+            writeValAtCurrentHeadLocation(0);
         } else {
-            memoryBufferA[getCurrentHeadLocation[1]] = 1;
+            writeValAtCurrentHeadLocation(1);
         }
+        //move head left
         moveHeadLeft(); 
+    };
+
+    while (readRegisterPropertyValue(registers.auxBufferOne) <= 7){
+    //we assume auxBufferOne is at 00000000 when we start;
+    //therefore whe should run 
+        oneNotShiftLeft();
+        incrementRegisterProperty(registers.auxBufferOne);
     }
+    //head should shift left until it is at [A, 0]
+
+    resetRegisterProperty(registers.auxBufferOne);
+    //returnMemBufferRL will read 8 bits from right to left, inclusively
+    //it will begin with current Head position
+    //and end on +7, and include it.
+    return returnMemBufferRL();
+    //will Leave head at ['A', 7]
 };
 
 var ID   = function () {
 
+//move head to ['A', 0] to set buffer for returnMemBufferRL 
+    while (readRegisterPropertyValue(registers.auxBufferOne) <=7){
+        moveHeadLeft();
+    }
+    
+    //send back mem buffer A as a string 
+    return returnMemBufferRL();
 };
 
 var AND  = function () {
+//might want to rewrite this to handle a single pass of MEM BUFF A
+//   flip bits in aux Buff One based on current index; and clear and r/w on
+//   mem buff B based on flipped bits in aux buff One
+//   instead of see-sawing back and forth
+    
+    while (readRegisterPropertyValue(registers.auxBufferTwo) <= 7){
+
+        incrementRegisterProperty(registers.auxBufferTwo);
+
+        if(getCurrentHeadValue()){
+            incrementRegisterProperty(registers.auxBufferOne);
+        }
+        moveHeadLeft();     //1
+        moveHeadLeft();     //2
+        moveHeadLeft();     //3
+        moveHeadLeft();     //4
+        moveHeadLeft();     //5
+        moveHeadLeft();     //6
+        moveHeadLeft();     //7
+        moveHeadLeft();     //8
+        if(readRegisterPropertyValue(auxBufferOne)){
+            if(getCurrentHeadValue()){
+                writeValAtCurrentHeadLocation(1);
+            }
+        } else {
+            writeValAtCurrentHeadLocation(0);
+        }
+        resetRegisterProperty(registers.auxBufferTwo);
+        moveHeadRight();    //1     
+        moveHeadRight();    //2      
+        moveHeadRight();    //3    
+        moveHeadRight();    //4
+        moveHeadRight();    //5
+        moveHeadRight();    //6
+        moveHeadRight();    //7
+    }
   
+    //reset auxBufferTwo to 0;
+    //move head to start ['B', 0]
+    while (readRegisterPropertyValue(register.auxBufferTwo) <= 7){
+        moveHeadLeft();
+    }
+
+    var returnable = returnMemBufferRL();
+
+    setHeadLocationToStart();
+    
+    return returnable;
 };
 
 var NAND = function () {
+//see AND Note
+//should also be able to handle NOT + AND
+//BUT  currently AND sets the Head Location after running;
+// I can set head location at start of operations to allo for better concatenation of
+//operations? 
+
+    while (readRegisterPropertyValue(registers.auxBufferTwo) <= 7){
+
+        incrementRegisterProperty(registers.auxBufferTwo);
+
+        if(getCurrentHeadValue()){
+            incrementRegisterProperty(registers.auxBufferOne);
+        }
+        moveHeadLeft();     //1
+        moveHeadLeft();     //2
+        moveHeadLeft();     //3
+        moveHeadLeft();     //4
+        moveHeadLeft();     //5
+        moveHeadLeft();     //6
+        moveHeadLeft();     //7
+        moveHeadLeft();     //8
+        if(readRegisterPropertyValue(auxBufferOne)){
+            if(getCurrentHeadValue()){
+                writeValAtCurrentHeadLocation(1);
+            }
+        } else {
+            writeValAtCurrentHeadLocation(0);
+        }
+        resetRegisterProperty(registers.auxBufferTwo);
+        moveHeadRight();    //1     
+        moveHeadRight();    //2      
+        moveHeadRight();    //3    
+        moveHeadRight();    //4
+        moveHeadRight();    //5
+        moveHeadRight();    //6
+        moveHeadRight();    //7
+    }
+  
+    //reset auxBufferTwo to 0;
+    //move head to start ['B', 0]
+    while (readRegisterPropertyValue(register.auxBufferTwo) <= 7){
+        moveHeadLeft();
+    }
+
+    var returnable = returnMemBufferRL();
+
+    setHeadLocationToStart();
+    
+    return returnable;
 
 };
 
@@ -36,6 +168,33 @@ var XOR  = function () {
 var NXOR = function() {
 
 };
+
+//convert eights bits of memory buffer to a string to send back;
+//begins at the head position and moves right 8 spaces;
+//to return a whole buffer, ensure the head is at index 0 in teh buffer
+//   before calling returnMemBuffer;
+var returnMemBufferRL = function(){
+    var returnString = ''
+// ******* WARNING **** USES AND RESETS AUXBUFFER2, and HEAD LOCATION
+//DO NOT CALL RETURN MEMORY BUFFER IF DATA IN AUXBUFFER2 IS NEEDED;
+
+    while (readRegisterPropertyValue(register.auxBufferTwo) <= 7){
+        incrementRegisterProperty(register.auxBufferTwo);
+        returnString += getCurrentHeadValue().toString();
+        moveHeadRight();
+    };
+
+// ************************************************
+// SET HEAD LOCATION TO Start of buffer ( A/B, 7), for next operation.
+//
+// ************************************************
+    while (readRegisterPropertyValue(register.auxBufferTwo) >=0){
+        decrementRegisterProperty(register.auxBufferTwo)
+        moveHeadRight();
+    }
+
+    return returnString;
+}
 
 
 var toGate = function(){
@@ -81,42 +240,36 @@ var toGate = function(){
 }
 var setHeadLocationToStart = function () {
     if (registers.headBufferLocation[0]){
-        registers.headBufferLocation[0] = 0;
-        return;  
+        registers.headBufferLocation[0] = 0;  
     }
     if (registers.headBufferLocation[1]){
         registers.headBufferLocation[1] = 0;
-        return;
     }
     if (registers.headBufferLocation[2]){
         registers.headBufferLocation[2] = 0;
-        return;
     }
     if (registers.headBufferLocation[3]){
         registers.headBufferLocation[3] = 0;
-        return;
     }
     if (registers.headBufferLocation[4]){
         registers.headBufferLocation[4] = 0;
-        return;
     }
     if (registers.headBufferLocation[5]){
         registers.headBufferLocation[5] = 0;
-        return;
     }
     if (registers.headBufferLocation[6]){
         registers.headBufferLocation[6] = 0;
-        return;
     }
     if (registers.headBufferLocation[7]){
         registers.headBufferLocation[7] = 0;
-        return;
     }
     if (registers.headBufferLocation[8]){
         registers.headBufferLocation[8] = 0;
-        return;
     }
-}
+    return registers.headBufferLocation
+};
+
+
 var getCurrentHeadValue = function () {
 if (registers.headBufferLocation[7]){                     //xxxxxxx1
         if (registers.headBufferLocation[6]){             //xxxxxx11
@@ -244,41 +397,94 @@ if (registers.headBufferLocation[7]){                     //xxxxxxx1
     }
 };
 
+var writeValAtCurrentHeadLocation = function (num   /* 0 xor 1 */){
+    var headLoc = getCurrentHeadLocation();
+    if (headLoc[0] === 'A'){
+        registers.memoryBufferA[headLoc[1]] = num;
+    } else {
+        registers.memoryBufferB[headLoc[1]] = num;
+    }
+    return num
+}
+
+
+// :::::::::::::::::::::::::
+//   MOVE HEAD LEFT ::::::::
+// ::::::::::::::::::::::::: 
+//                                               START?
+//                                                 ||
+//                                                 \/
+//               0    1    2    3    4    5    6    7
+//    MEMBUFFA [ | | <- | <- | <- | <- | <- | <- | <- ]                                        
+//               \                                 /\ 
+//               |                        _________|| 
+//                \______________________/___________ 
+//                                      /            ||
+//                 ____________________/             || 
+//                /                                  \/
+//    MEMBUFFB [ | | <- | <- | <- | <- | <- | <- | <- ]
+//               0    1    2    3    4    5    6    7
+// 
+// 
+// ::::::::::::::::::::::::::
+//   MOVE HEAD RIGHT ::::::::
+// ::::::::::::::::::::::::::
+// 
+//               0    1    2    3    4    5    6    7
+//    MEMBUFFA [ -> | -> | -> | -> | -> | -> | -> |  |  ]                                        
+//               /\                                  |
+//                \_____<___<_  _______>______>______/                  
+//                            \/
+//                   ___>___>_/\_______<______<______                     
+//                  /                                \
+//                 \/                                 |
+//    MEMBUFFAB [ -> | -> | -> | -> | -> | -> | -> |  |  ]
+//                 0    1    2    3    4    5    6    7
+//               /\
+//               ||
+//               START?
+// 
+// 
+// 
+// 
+// 
+// 
+
 var moveHeadLeft = function ()  {
 if (registers.headBufferLocation[7]){                     //xxxxxxx1
         if (registers.headBufferLocation[6]){             //xxxxxx11
             if (registers.headBufferLocation[5]){         //xxxxx111 *   head at index 7 
                 if (registers.headBufferLocation[4]){     //xxxx1111 **  head at index 7 in buffer B 
-                    headBufferLocation[7] = 0;
+                    registers.headBufferLocation[7] = 0;
                     return ['B', 6]; 
                 } else {                                  //xxxx0111 **  head at index 7 in buffer A
-                    headBufferLocation[7] = 0;
+                    registers.headBufferLocation[7] = 0;
                     return ['A', 6];
                 }      
             } else {                                      //xxxxx011 *   head at index 3 
                 if (registers.headBufferLocation[4]){     //xxxx1011 **  head at index 3 in buffer B 
-                    headBufferLocation[7] = 0;
+                    registers.headBufferLocation[7] = 0;
                     return ['B', 2];    
                 } else {                                  //xxxx0011 **  head at index 3 in buffer A
-                    headBufferLocation[7] = 0;
+                    registers.headBufferLocation[7] = 0;
                     return ['A', 2];
                 }
             }
         } else {                                          //xxxxxx01
             if (registers.headBufferLocation[5]){         //xxxxx101 *   head at index 5 
                 if (registers.headBufferLocation[4]){     //xxxx1101 **  head at index 5 in buffer B 
-                    headBufferLocation[7] = 0;
+                    registers.headBufferLocation[7] = 0;
                     return ['B', 4];        
                 } else {                                  //xxxx0101 **  head at index 5 in buffer A
-                    headBufferLocation[7] = 0;
+                    registers.headBufferLocation[7] = 0;
                     return ['A', 4];
                 }    
             } else {                                      //xxxxx001 *   head at index 1 
                 if (registers.headBufferLocation[4]){     //xxxx1001 **  head at index 1 in buffer B 
-                    headBufferLocation[7] = 0;
+                    registers.headBufferLocation[7] = 0;
                     return ['B', 0];        
                 } else {                                  //xxxx0001 **  head at index 1 in buffer A
-                    headBufferLocation[7] = 0;
+                    registers.headBufferLocation[7] = 0;
                     return ['A', 0];
                 }   
             }
@@ -287,48 +493,52 @@ if (registers.headBufferLocation[7]){                     //xxxxxxx1
         if (registers.headBufferLocation[6]){             //xxxxxx10
             if (registers.headBufferLocation[5]){         //xxxxx110 *  head at index 6 
                  if (registers.headBufferLocation[4]){    //xxxx1110 **  head at index 6 in buffer B 
-                    headBufferLocation[6] = 0;
-                    headBufferLocation[7] = 1;
+                    registers.headBufferLocation[6] = 0;
+                    registers.headBufferLocation[7] = 1;
                     return ['B', 5];     
                 } else {                                  //xxxx0110 **  head at index 6 in buffer A
-                    headBufferLocation[6] = 0;
-                    headBufferLocation[7] = 1;
+                    registers.headBufferLocation[6] = 0;
+                    registers.headBufferLocation[7] = 1;
                     return ['A', 5];
                 }         
             } else {                                      //xxxxx010 *  head at index 2 
                  if (registers.headBufferLocation[4]){    //xxxx1010 **  head at index 2 in buffer B 
-                    headBufferLocation[6] = 0;
-                    headBufferLocation[7] = 1;
+                    registers.headBufferLocation[6] = 0;
+                    registers.headBufferLocation[7] = 1;
                     return ['B', 1];     
                 } else {                                  //xxxx0010 **  head at index 2 in buffer A
-                    headBufferLocation[6] = 0;
-                    headBufferLocation[7] = 1;
+                    registers.headBufferLocation[6] = 0;
+                    registers.headBufferLocation[7] = 1;
                     return ['A', 1];
                 }       
             }
         } else {                                          //xxxxxx00 * 
             if (registers.headBufferLocation[5]){         //xxxxx100 *  head at index 4 
                  if (registers.headBufferLocation[4]){    //xxxx1100 *  head at index 4 in buffer B 
-                    headBufferLocation[5] = 0;
-                    headBufferLocation[6] = 1;
-                    headBufferLocation[7] = 1;
+                    registers.headBufferLocation[5] = 0;
+                    registers.headBufferLocation[6] = 1;
+                    registers.headBufferLocation[7] = 1;
                     return ['B', 3];
                 } else {                                  //xxxx0100 *  head at index 4 in buffer A
-                    headBufferLocation[5] = 0;
-                    headBufferLocation[6] = 1;
-                    headBufferLocation[7] = 1;
+                    registers.headBufferLocation[5] = 0;
+                    registers.headBufferLocation[6] = 1;
+                    registers.headBufferLocation[7] = 1;
                     return ['A', 3];
                     
                 }   
             } else {                                      //xxxxx000 *  head at index 0 
                 if (registers.headBufferLocation[4]){     //xxxx1000 *  head at index 0 in buffer B 
-                    headBufferLocation[4] = 0;
-                    headBufferLocation[5] = 1;
-                    headBufferLocation[6] = 1;
-                    headBufferLocation[7] = 1;
-                    return ['A', 7]; 
+                    registers.headBufferLocation[4] = 0;
+                    registers.headBufferLocation[5] = 1;
+                    registers.headBufferLocation[6] = 1;
+                    registers.headBufferLocation[7] = 1;
+                    return ['A', 7];                                  //xxxx0000 **  head at index 0 in buffer A
                 } else {
-                    return ['A', 0];                                  //xxxx0000 **  head at index 0 in buffer A
+                    registers.headBufferLocation[4] = 1;
+                    registers.headBufferLocation[5] = 1;
+                    registers.headBufferLocation[6] = 1;
+                    registers.headBufferLocation[7] = 1;
+                    return ['B', 7]; 
                 }   
             }
         }
@@ -341,36 +551,40 @@ if (registers.headBufferLocation[7]){                     //xxxxxxx1
         if (registers.headBufferLocation[6]){             //xxxxxx11
             if (registers.headBufferLocation[5]){         //xxxxx111 *   head at index 7 
                 if (registers.headBufferLocation[4]){
-                    return ['B', 7];                      //xxxx1111 **  head at index 7 in buffer B  
+                    registers.headBufferLocation[4] = 0;
+                    registers.headBufferLocation[5] = 0;
+                    registers.headBufferLocation[6] = 0;
+                    registers.headBufferLocation[7] = 0;
+                    return ['A', 0];                      //xxxx1111 **  head at index 7 in buffer B  
                 } else {                                  //xxxx0111 **  head at index 7 in buffer A
-                    headBufferLocation[4] = 1;
-                    headBufferLocation[5] = 0;
-                    headBufferLocation[6] = 0;
-                    headBufferLocation[7] = 0;
+                    registers.headBufferLocation[4] = 1;
+                    registers.headBufferLocation[5] = 0;
+                    registers.headBufferLocation[6] = 0;
+                    registers.headBufferLocation[7] = 0;
                     return ['B', 0];
                 }      
             } else {                                      //xxxxx011 *   head at index 3 
                 if (registers.headBufferLocation[4]){     //xxxx1011 **  head at index 3 in buffer B 
-                    headBufferLocation[5] = 1;
-                    headBufferLocation[6] = 0;
-                    headBufferLocation[7] = 0;
+                    registers.headBufferLocation[5] = 1;
+                    registers.headBufferLocation[6] = 0;
+                    registers.headBufferLocation[7] = 0;
                     return ['B', 4];    
                 } else {                                  //xxxx0011 **  head at index 3 in buffer A
-                    headBufferLocation[5] = 1;
-                    headBufferLocation[6] = 0;
-                    headBufferLocation[7] = 0;
+                    registers.headBufferLocation[5] = 1;
+                    registers.headBufferLocation[6] = 0;
+                    registers.headBufferLocation[7] = 0;
                     return ['A', 4];
                 }
             }
         } else {                                          //xxxxxx01
             if (registers.headBufferLocation[5]){         //xxxxx101 *   head at index 5 
                 if (registers.headBufferLocation[4]){     //xxxx1101 **  head at index 5 in buffer B 
-                    headBufferLocation[6] = 1;
-                    headBufferLocation[7] = 0;
+                    registers.headBufferLocation[6] = 1;
+                    registers.headBufferLocation[7] = 0;
                     return ['B', 6];        
                 } else {                                  //xxxx0101 **  head at index 5 in buffer A
-                    headBufferLocation[6] = 1;
-                    headBufferLocation[7] = 0;
+                    registers.headBufferLocation[6] = 1;
+                    registers.headBufferLocation[7] = 0;
                     return ['A', 6];
                 }    
             } else {                                      //xxxxx001 *   head at index 1 
@@ -379,8 +593,8 @@ if (registers.headBufferLocation[7]){                     //xxxxxxx1
                     headBufferLocation[7] = 0;
                     return ['B', 2];        
                 } else {                                  //xxxx0001 **  head at index 1 in buffer A
-                    headBufferLocation[6] = 1;
-                    headBufferLocation[7] = 0;
+                    registers.headBufferLocation[6] = 1;
+                    registers.headBufferLocation[7] = 0;
                     return ['A', 2];
                 }   
             }
@@ -389,36 +603,36 @@ if (registers.headBufferLocation[7]){                     //xxxxxxx1
         if (registers.headBufferLocation[6]){             //xxxxxx10
             if (registers.headBufferLocation[5]){         //xxxxx110 *  head at index 6 
                  if (registers.headBufferLocation[4]){    //xxxx1110 **  head at index 6 in buffer B 
-                    headBufferLocation[7] = 1;
+                    registers.headBufferLocation[7] = 1;
                     return ['B', 7];     
                 } else {                                  //xxxx0110 **  head at index 6 in buffer A
-                    headBufferLocation[7] = 1;
+                    registers.headBufferLocation[7] = 1;
                     return ['A', 7];
                 }         
             } else {                                      //xxxxx010 *  head at index 2 
                  if (registers.headBufferLocation[4]){    //xxxx1010 **  head at index 2 in buffer B 
-                    headBufferLocation[7] = 1;
+                    registers.headBufferLocation[7] = 1;
                     return ['B', 3];
                 } else {                                  //xxxx0010 **  head at index 2 in buffer A
-                    headBufferLocation[7] = 1;
+                    registers.headBufferLocation[7] = 1;
                     return ['A', 3];
                 }       
             }
         } else {                                          //xxxxxx00 * 
             if (registers.headBufferLocation[5]){         //xxxxx100 *  head at index 4 
                  if (registers.headBufferLocation[4]){    //xxxx1100 *  head at index 4 in buffer B 
-                    headBufferLocation[7] = 1;
+                    registers.headBufferLocation[7] = 1;
                     return ['B', 5];
                 } else {                                    //xxxx0100 *  head at index 4 in buffer A
-                    headBufferLocation[7] = 1;
+                    registers.headBufferLocation[7] = 1;
                     return ['A', 5];
                 }   
             } else {                                      //xxxxx000 *  head at index 0 
                 if (registers.headBufferLocation[4]){     //xxxx1000 *  head at index 0 in buffer B 
-                    headBufferLocation[7] = 1;
+                    registers.headBufferLocation[7] = 1;
                     return ['B', 1];
                 } else {                                  //xxxx0000 **  head at index 0 in buffer A
-                    headBufferLocation[7] = 1;
+                    registers.headBufferLocation[7] = 1;
                     return ['A', 1];
                 }   
             }
@@ -485,6 +699,18 @@ var readRegisterPropertyValue = function (regProp){
         value += 128;
     }
     return value;
+}
+
+var resetRegisterProperty = function (regProp){
+    regProp[7] = 0;
+    regProp[6] = 0;
+    regProp[5] = 0;
+    regProp[4] = 0;
+    regProp[3] = 0;
+    regProp[2] = 0;
+    regProp[1] = 0;  
+    regProp[0] = 0;
+    return regProp;
 }
 
 
