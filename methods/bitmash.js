@@ -29,7 +29,7 @@ var NOT  = function () {
             writeValAtCurrentHeadLocation(1);
         }
         //move head left
-        moveHeadLeft(); 
+        LEFT(); 
     };
 
     while (readRegisterPropertyValue(registers.auxBufferOne) <= 7){
@@ -69,10 +69,14 @@ var ID   = function () {
     //         writeValAtCurrentHeadLocation(0);
     //         SWAP();
     //     }
-    //     moveHeadLeft();
+    //     LEFT();
     // };
     // resetRegisterProperty(registers.auxBufferOne);
-    //send back mem buffer A as a string 
+    //send back mem buffer A as a string
+    console.log(registers.memoryBufferA);
+    console.log(registers.memoryBufferB);
+    console.log(getCurrentHeadLocation())
+     
     return returnMemBufferL(); //head left x8
 };
 
@@ -125,7 +129,7 @@ var AND  = function () {
         }
         
         SWAP();
-        moveHeadLeft();
+        LEFT();
     }
     //should end at ('alt' 7)
 
@@ -179,33 +183,36 @@ var XOR  = function () {
         
         
         if (readRegisterPropertyValue(registers.auxBufferOne)){
+            console.log('case 1')
             if (getCurrentHeadValue()){
                 writeValAtCurrentHeadLocation(0);
             } else {
                 writeValAtCurrentHeadLocation(1);
             }
+            decrementRegisterProperty(registers.auxBufferOne);
         } else {
+            console.log('case 2')
             if (getCurrentHeadValue()){
                 writeValAtCurrentHeadLocation(1);
-            } else {
+            } else {    
                 writeValAtCurrentHeadLocation(0);
             }
         }
 
-        resetRegisterProperty(registers.auxBufferOne);
+        
 
         SWAP();
         
-        moveHeadLeft();
+        LEFT();
     }
-
+    resetRegisterProperty(registers.auxBufferTwo)
     return returnMemBufferL();  
 };
 
 var XNOR = function() {
     XOR();
     SWAP();
-    NOT();
+    return NOT();
 
 };
 var returnMemBufferL = function(){
@@ -214,10 +221,13 @@ var returnMemBufferL = function(){
     var returnString = '';
 
     while (readRegisterPropertyValue(registers.auxBufferTwo) <= 7){
+        console.log(getCurrentHeadValue())
         incrementRegisterProperty(registers.auxBufferTwo);
         returnString =  getCurrentHeadValue().toString() + returnString 
-        moveHeadLeft();
+        LEFT();
     }
+
+    resetRegisterProperty(registers.auxBufferTwo)
 
     //will end at a/b // b/a 7 
     //equivalent to swap buffer;
@@ -241,7 +251,7 @@ var returnMemBufferR = function(){
     while (readRegisterPropertyValue(register.auxBufferTwo) <= 7){
         incrementRegisterProperty(register.auxBufferTwo);
         returnString += getCurrentHeadValue().toString();
-        moveHeadRight();
+        RIGHT();
     };
 
     return returnString;
@@ -296,14 +306,14 @@ var toGate = function(){
 
 var SWAP = function() {
     //swaps [from MemBuff A to MemBuff B]
-    moveHeadLeft();
-    moveHeadLeft();
-    moveHeadLeft();
-    moveHeadLeft();
-    moveHeadLeft(); 
-    moveHeadLeft();
-    moveHeadLeft();
-    moveHeadLeft();
+    LEFT();
+    LEFT();
+    LEFT();
+    LEFT();
+    LEFT(); 
+    LEFT();
+    LEFT();
+    LEFT();
     return;
 }
 
@@ -517,7 +527,7 @@ var writeValAtCurrentHeadLocation = function (num   /* 0 xor 1 */){
 // 
 // 
 
-var moveHeadLeft = function ()  {
+var LEFT = function ()  {
 if (registers.headBufferLocation[7]){                     //xxxxxxx1
         if (registers.headBufferLocation[6]){             //xxxxxx11
             if (registers.headBufferLocation[5]){         //xxxxx111 *   head at index 7 
@@ -613,7 +623,7 @@ if (registers.headBufferLocation[7]){                     //xxxxxxx1
 };
 
 
-var moveHeadRight = function ()  {
+var RIGHT = function ()  {
 if (registers.headBufferLocation[7]){                     //xxxxxxx1
         if (registers.headBufferLocation[6]){             //xxxxxx11
             if (registers.headBufferLocation[5]){         //xxxxx111 *   head at index 7 
@@ -778,6 +788,12 @@ var resetRegisterProperty = function (regProp){
     regProp[1] = 0;  
     regProp[0] = 0;
     return regProp;
+}
+
+var RESETAUX = function () {
+    resetRegisterProperty(registers.auxBufferOne);
+    resetRegisterProperty(registers.auxBufferTwo);
+    return 1;
 }
 
 
