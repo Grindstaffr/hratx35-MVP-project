@@ -250,36 +250,36 @@ if (registers.headBufferLocation[7]){                     //xxxxxxx1
             if (registers.headBufferLocation[5]){         //xxxxx111 *   head at index 7 
                 if (registers.headBufferLocation[4]){     //xxxx1111 **  head at index 7 in buffer B 
                     headBufferLocation[7] = 0;
-                    return registers.memoryBufferB[6]; 
+                    return ['B', 6]; 
                 } else {                                  //xxxx0111 **  head at index 7 in buffer A
                     headBufferLocation[7] = 0;
-                    return registers.memoryBufferA[6];
+                    return ['A', 6];
                 }      
             } else {                                      //xxxxx011 *   head at index 3 
                 if (registers.headBufferLocation[4]){     //xxxx1011 **  head at index 3 in buffer B 
                     headBufferLocation[7] = 0;
-                    return registers.memoryBufferB[2];    
+                    return ['B', 2];    
                 } else {                                  //xxxx0011 **  head at index 3 in buffer A
                     headBufferLocation[7] = 0;
-                    return registers.memoryBufferA[2];
+                    return ['A', 2];
                 }
             }
         } else {                                          //xxxxxx01
             if (registers.headBufferLocation[5]){         //xxxxx101 *   head at index 5 
                 if (registers.headBufferLocation[4]){     //xxxx1101 **  head at index 5 in buffer B 
                     headBufferLocation[7] = 0;
-                    return registers.memoryBufferB[4];        
+                    return ['B', 4];        
                 } else {                                  //xxxx0101 **  head at index 5 in buffer A
                     headBufferLocation[7] = 0;
-                    return registers.memoryBufferA[4];
+                    return ['A', 4];
                 }    
             } else {                                      //xxxxx001 *   head at index 1 
                 if (registers.headBufferLocation[4]){     //xxxx1001 **  head at index 1 in buffer B 
                     headBufferLocation[7] = 0;
-                    return registers.memoryBufferB[0];        
+                    return ['B', 0];        
                 } else {                                  //xxxx0001 **  head at index 1 in buffer A
                     headBufferLocation[7] = 0;
-                    return registers.memoryBufferA[0];
+                    return ['A', 0];
                 }   
             }
         }
@@ -289,21 +289,21 @@ if (registers.headBufferLocation[7]){                     //xxxxxxx1
                  if (registers.headBufferLocation[4]){    //xxxx1110 **  head at index 6 in buffer B 
                     headBufferLocation[6] = 0;
                     headBufferLocation[7] = 1;
-                    return registers.memoryBufferB[5];     
+                    return ['B', 5];     
                 } else {                                  //xxxx0110 **  head at index 6 in buffer A
                     headBufferLocation[6] = 0;
                     headBufferLocation[7] = 1;
-                    return registers.memoryBufferA[5];
+                    return ['A', 5];
                 }         
             } else {                                      //xxxxx010 *  head at index 2 
                  if (registers.headBufferLocation[4]){    //xxxx1010 **  head at index 2 in buffer B 
                     headBufferLocation[6] = 0;
                     headBufferLocation[7] = 1;
-                    return registers.memoryBufferB[1];     
+                    return ['B', 1];     
                 } else {                                  //xxxx0010 **  head at index 2 in buffer A
                     headBufferLocation[6] = 0;
                     headBufferLocation[7] = 1;
-                    return registers.memoryBufferA[1];
+                    return ['A', 1];
                 }       
             }
         } else {                                          //xxxxxx00 * 
@@ -312,12 +312,12 @@ if (registers.headBufferLocation[7]){                     //xxxxxxx1
                     headBufferLocation[5] = 0;
                     headBufferLocation[6] = 1;
                     headBufferLocation[7] = 1;
-                    return registers.memoryBufferB[3];
+                    return ['B', 3];
                 } else {                                  //xxxx0100 *  head at index 4 in buffer A
                     headBufferLocation[5] = 0;
                     headBufferLocation[6] = 1;
                     headBufferLocation[7] = 1;
-                    return registers.memoryBufferB[3];
+                    return ['A', 3];
                     
                 }   
             } else {                                      //xxxxx000 *  head at index 0 
@@ -326,9 +326,9 @@ if (registers.headBufferLocation[7]){                     //xxxxxxx1
                     headBufferLocation[5] = 1;
                     headBufferLocation[6] = 1;
                     headBufferLocation[7] = 1;
-                    return registers.memoryBufferA[7]; 
+                    return ['A', 7]; 
                 } else {
-                    return registers.memoryBufferA[0];                                  //xxxx0000 **  head at index 0 in buffer A
+                    return ['A', 0];                                  //xxxx0000 **  head at index 0 in buffer A
                 }   
             }
         }
@@ -341,25 +341,25 @@ if (registers.headBufferLocation[7]){                     //xxxxxxx1
         if (registers.headBufferLocation[6]){             //xxxxxx11
             if (registers.headBufferLocation[5]){         //xxxxx111 *   head at index 7 
                 if (registers.headBufferLocation[4]){
-                    return registers.memoryBufferA[0];              //xxxx1111 **  head at index 7 in buffer B  
+                    return ['B', 7];                      //xxxx1111 **  head at index 7 in buffer B  
                 } else {                                  //xxxx0111 **  head at index 7 in buffer A
                     headBufferLocation[4] = 1;
                     headBufferLocation[5] = 0;
                     headBufferLocation[6] = 0;
                     headBufferLocation[7] = 0;
-                    return registers.memoryBufferB[0];
+                    return ['B', 0];
                 }      
             } else {                                      //xxxxx011 *   head at index 3 
                 if (registers.headBufferLocation[4]){     //xxxx1011 **  head at index 3 in buffer B 
                     headBufferLocation[5] = 1;
                     headBufferLocation[6] = 0;
                     headBufferLocation[7] = 0;
-                    return registers.memoryBufferB[4];    
+                    return ['B', 4];    
                 } else {                                  //xxxx0011 **  head at index 3 in buffer A
                     headBufferLocation[5] = 1;
                     headBufferLocation[6] = 0;
                     headBufferLocation[7] = 0;
-                    return registers.memoryBufferA[4];
+                    return ['A', 4];
                 }
             }
         } else {                                          //xxxxxx01
@@ -367,21 +367,21 @@ if (registers.headBufferLocation[7]){                     //xxxxxxx1
                 if (registers.headBufferLocation[4]){     //xxxx1101 **  head at index 5 in buffer B 
                     headBufferLocation[6] = 1;
                     headBufferLocation[7] = 0;
-                    return registers.memoryBufferB[6];        
+                    return ['B', 6];        
                 } else {                                  //xxxx0101 **  head at index 5 in buffer A
                     headBufferLocation[6] = 1;
                     headBufferLocation[7] = 0;
-                    return registers.memoryBufferA[6];
+                    return ['A', 6];
                 }    
             } else {                                      //xxxxx001 *   head at index 1 
                 if (registers.headBufferLocation[4]){     //xxxx1001 **  head at index 1 in buffer B 
                     headBufferLocation[6] = 1;
                     headBufferLocation[7] = 0;
-                    return registers.memoryBufferB[2];        
+                    return ['B', 2];        
                 } else {                                  //xxxx0001 **  head at index 1 in buffer A
                     headBufferLocation[6] = 1;
                     headBufferLocation[7] = 0;
-                    return registers.memoryBufferA[2];
+                    return ['A', 2];
                 }   
             }
         }
@@ -390,146 +390,102 @@ if (registers.headBufferLocation[7]){                     //xxxxxxx1
             if (registers.headBufferLocation[5]){         //xxxxx110 *  head at index 6 
                  if (registers.headBufferLocation[4]){    //xxxx1110 **  head at index 6 in buffer B 
                     headBufferLocation[7] = 1;
-                    return registers.memoryBufferB[7];     
+                    return ['B', 7];     
                 } else {                                  //xxxx0110 **  head at index 6 in buffer A
                     headBufferLocation[7] = 1;
-                    return registers.memoryBufferA[7];
+                    return ['A', 7];
                 }         
             } else {                                      //xxxxx010 *  head at index 2 
                  if (registers.headBufferLocation[4]){    //xxxx1010 **  head at index 2 in buffer B 
                     headBufferLocation[7] = 1;
-                    return registers.memoryBufferB[3];
+                    return ['B', 3];
                 } else {                                  //xxxx0010 **  head at index 2 in buffer A
                     headBufferLocation[7] = 1;
-                    return registers.memoryBufferA[3];
+                    return ['A', 3];
                 }       
             }
         } else {                                          //xxxxxx00 * 
             if (registers.headBufferLocation[5]){         //xxxxx100 *  head at index 4 
                  if (registers.headBufferLocation[4]){    //xxxx1100 *  head at index 4 in buffer B 
                     headBufferLocation[7] = 1;
-                    return registers.memoryBufferB[5];
+                    return ['B', 5];
                 } else {                                    //xxxx0100 *  head at index 4 in buffer A
                     headBufferLocation[7] = 1;
-                    return registers.memoryBufferA[5];
+                    return ['A', 5];
                 }   
             } else {                                      //xxxxx000 *  head at index 0 
                 if (registers.headBufferLocation[4]){     //xxxx1000 *  head at index 0 in buffer B 
                     headBufferLocation[7] = 1;
-                    return registers.memoryBufferB[1];
+                    return ['B', 1];
                 } else {                                  //xxxx0000 **  head at index 0 in buffer A
                     headBufferLocation[7] = 1;
-                    return registers.memoryBufferA[1];
+                    return ['A', 1];
                 }   
             }
         }
     }
 };
 
-var incrementRegisterPropertyOnLastFourBits = function (regProp)  {
-if (registers[regProp][7]){                                 //xxxxxxx1
-        if (registers[regProp][6]){                         //xxxxxx11
-            if (registers[regProp][5]){                     //xxxxx111 *   head at index 7 
-                if (registers[regProp][4]){
-                    return registers[regprop];              //xxxx1111 **  head at index 7 in buffer B  
-                } else {                                    //xxxx0111 **  head at index 7 in buffer A
-                    regProp[4] = 1;
-                    regProp[5] = 0;
-                    regProp[6] = 0;
-                    regProp[7] = 0;
-                    return registers[regProp];
-                }      
-            } else {                                       //xxxxx011 *   head at index 3 
-                if (registers[regProp][4]){                //xxxx1011 **  head at index 3 in buffer B 
-                    regProp[5] = 1;
-                    regProp[6] = 0;
-                    regProp[7] = 0;
-                    return registers[regProp];    
-                } else {                                   //xxxx0011 **  head at index 3 in buffer A
-                    regProp[5] = 1;
-                    regProp[6] = 0;
-                    regProp[7] = 0;
-                    return registers[regprop];
-                }
-            }
-        } else {                                            //xxxxxx01
-            if (registers[regProp][5]){                     //xxxxx101 *   head at index 5 
-                if (registers[regProp][4]){                 //xxxx1101 **  head at index 5 in buffer B 
-                    regProp[6] = 1;
-                    regProp[7] = 0;
-                    return registers[regProp];        
-                } else {                                    //xxxx0101 **  head at index 5 in buffer A
-                    regProp[6] = 1;
-                    regProp[7] = 0;
-                    return registers[regprop];
-                }    
-            } else {                                         //xxxxx001 *   head at index 1 
-                if (registers[regProp][4]){                  //xxxx1001 **  head at index 1 in buffer B 
-                    regProp[6] = 1;
-                    regProp[7] = 0;
-                    return registers[regProp];        
-                } else {                                  //xxxx0001 **  head at index 1 in buffer A
-                    regProp[6] = 1;
-                    regProp[7] = 0;
-                    return registers[regprop];
-                }   
-            }
-        }
-    } else {
-        if (registers[regProp][6]){             //xxxxxx10
-            if (registers[regProp][5]){         //xxxxx110 *  head at index 6 
-                 if (registers[regProp][4]){    //xxxx1110 **  head at index 6 in buffer B 
-                    regProp[7] = 1;
-                    return registers[regProp];     
-                } else {                                  //xxxx0110 **  head at index 6 in buffer A
-                    regProp[7] = 1;
-                    return registers[regprop];
-                }         
-            } else {                                      //xxxxx010 *  head at index 2 
-                 if (registers[regProp][4]){    //xxxx1010 **  head at index 2 in buffer B 
-                    regProp[7] = 1;
-                    return registers[regProp];
-                } else {                                  //xxxx0010 **  head at index 2 in buffer A
-                    regProp[7] = 1;
-                    return registers[regprop];
-                }       
-            }
-        } else {                                          //xxxxxx00 * 
-            if (registers[regProp][5]){         //xxxxx100 *  head at index 4 
-                 if (registers[regProp][4]){    //xxxx1100 *  head at index 4 in buffer B 
-                    regProp[7] = 1;
-                    return registers[regProp];
-                } else {                                    //xxxx0100 *  head at index 4 in buffer A
-                    regProp[7] = 1;
-                    return registers[regprop];
-                }   
-            } else {                                      //xxxxx000 *  head at index 0 
-                if (registers[regProp][4]){     //xxxx1000 *  head at index 0 in buffer B 
-                    regProp[7] = 1;
-                    return registers[regProp];
-                } else {                                  //xxxx0000 **  head at index 0 in buffer A
-                    regProp[7] = 1;
-                    return registers[regprop];
-                }   
-            }
-        }
-    }
-};
 
-var incrementRegisterPropertyOnEightBits = function (regProp, currentIndex){
-    var index = currentIndex || 7;
-    if (regProp[index]){
-        regProp[index] = 0;
-        if (index === 0) {return;}
-        return incrementRegisterPropertyOnEightBits(regProp, (index - 1))
-    } else {
-        regProp[index] = 1;
-        return;
-    }  
-    
+//change the state of the register by incrementing a given register property
+//performs a binary add one operation (will overflow register)
+var incrementRegisterProperty = function (regProp){  
+    var i = regProp.length-1;
+    while (regProp[i] === 1 && i >= 0){
+        regProp[i] = 0;
+        i--;
+    }
+    if (regProp[i] === 0){
+        regProp[i] = 1;
+    }
+    return regProp;
 }
 
-var binaryAdd = function () {}
+//change the state of the register by decrementing a given register property
+//performs a binary subtract one on operation (will overflow register to reset)
+var decrementRegisterProperty = function (regProp){ 
+    var i = regProp.lastIndexOf(1);
+    debugger;
+    if (!(i === -1)) {
+        regProp[i] = 0;
+        i++ 
+    }
+    while (regProp[i] === 0 && i < regProp.length){
+        regProp[i] = 1;
+        i ++; 
+    }
+    return regProp;
+}
+
+//read the current state of a given property value
+var readRegisterPropertyValue = function (regProp){ 
+    var value = 0;   
+    if (regProp[7]){
+        value += 1;
+    }
+    if (regProp[6]){
+        value += 2;
+    }
+    if (regProp[5]){
+        value += 4;
+    }
+    if (regProp[4]){
+        value += 8;
+    }
+    if (regProp[3]){
+        value += 16;
+    }
+    if (regProp[2]){
+        value += 32;
+    }
+    if (regProp[1]){
+        value += 64;
+    }
+    if (regProp[0]){
+        value += 128;
+    }
+    return value;
+}
 
 
 
