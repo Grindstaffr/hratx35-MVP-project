@@ -124,10 +124,10 @@ var NAND = function () {
         moveHeadLeft();     //8
         if(readRegisterPropertyValue(auxBufferOne)){
             if(getCurrentHeadValue()){
-                writeValAtCurrentHeadLocation(1);
+                writeValAtCurrentHeadLocation(0);
             }
         } else {
-            writeValAtCurrentHeadLocation(0);
+            writeValAtCurrentHeadLocation(1);
         }
         resetRegisterProperty(registers.auxBufferTwo);
         moveHeadRight();    //1     
