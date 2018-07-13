@@ -9,6 +9,16 @@
 // DO NOT leave data in buffers, as we make the assumption that buffers
 //       are empty before calling any function
 // 
+var registers =  {
+  instruction        : [0,0,0,0,0,0,0,0,0],
+  auxBufferOne       : [0,0,0,0,0,0,0,0,0],
+  auxBufferTwo       : [0,0,0,0,0,0,0,0,0],
+  address            : [0,0,0,0,0,0,0,0,0],
+  headBufferLocation : [0,0,0,0,0,0,0,0,0], 
+  memoryBufferA      : [0,0,0,0,0,0,0,0,0],
+  memoryBufferB      : [0,0,0,0,0,0,0,0,0]
+}
+
 var NOT  = function () { 
 
     var oneNotShiftLeft = function () {
@@ -28,25 +38,38 @@ var NOT  = function () {
         oneNotShiftLeft();
         incrementRegisterProperty(registers.auxBufferOne);
     }
-    //head should shift left until it is at [A, 0]
+    //head should shift left until it is at [B 7]
 
     resetRegisterProperty(registers.auxBufferOne);
+
     //returnMemBufferRL will read 8 bits from right to left, inclusively
     //it will begin with current Head position
     //and end on +7, and include it.
-    return returnMemBufferRL();
-    //will Leave head at ['A', 7]
+    swapBuffers();
+    return returnMemBufferL(); //<<<<<<<<<<<********************************************
+    //will Leave head at ['B', 7] if started on ['A', 7]
+    // will leave head at ['A', 7] if started on ['B', 7]
 };
 
 var ID   = function () {
 
 //move head to ['A', 0] to set buffer for returnMemBufferRL 
     while (readRegisterPropertyValue(registers.auxBufferOne) <=7){
+        incrementRegisterProperty(registers.auxBufferOne);
+        if (getCurrentHeadValue()){
+            swapBuffers();
+            writeValAtCurrentHeadLocation(1);
+            swapBuffers();
+        } else {
+            swapBuffers();
+            writeValAtCurrentHeadLocation(0);
+            swapBuffers();
+        }
         moveHeadLeft();
-    }
-    
+    };
+    resetRegisterProperty(registers.auxBufferOne);
     //send back mem buffer A as a string 
-    return returnMemBufferRL();
+    return returnMemBufferRL(); //head left x8
 };
 
 var AND  = function () {
@@ -55,6 +78,26 @@ var AND  = function () {
 //   mem buff B based on flipped bits in aux buff One
 //   instead of see-sawing back and forth
     
+
+// at aux buf one  = 0 index starts at A7
+                            // ends at A6
+// at aux buf one  = 1 index starts at A6
+                            // ends at A5
+// at aux buf one  = 2 index starts at A5
+                            // ends at A4
+// at aux buf one  = 3 index starts at A4
+                            // ends at A3
+// at aux buf one  = 4 index starts at A3
+                            // ends at A2
+// at aux buf one  = 5 index starts at A2
+                            // ends at A1
+// at aux buf one  = 6 index starts at A1
+                            // ends at A0
+// at aux buf one  = 7 index starts at A0
+                            // ends at B7
+
+
+
     while (readRegisterPropertyValue(registers.auxBufferTwo) <= 7){
 
         incrementRegisterProperty(registers.auxBufferTwo);
@@ -62,14 +105,7 @@ var AND  = function () {
         if(getCurrentHeadValue()){
             incrementRegisterProperty(registers.auxBufferOne);
         }
-        moveHeadLeft();     //1
-        moveHeadLeft();     //2
-        moveHeadLeft();     //3
-        moveHeadLeft();     //4
-        moveHeadLeft();     //5
-        moveHeadLeft();     //6
-        moveHeadLeft();     //7
-        moveHeadLeft();     //8
+        swapBuffers();
         if(readRegisterPropertyValue(auxBufferOne)){
             if(getCurrentHeadValue()){
                 writeValAtCurrentHeadLocation(1);
@@ -77,27 +113,20 @@ var AND  = function () {
         } else {
             writeValAtCurrentHeadLocation(0);
         }
-        resetRegisterProperty(registers.auxBufferTwo);
-        moveHeadRight();    //1     
-        moveHeadRight();    //2      
-        moveHeadRight();    //3    
-        moveHeadRight();    //4
-        moveHeadRight();    //5
-        moveHeadRight();    //6
-        moveHeadRight();    //7
-    }
-  
-    //reset auxBufferTwo to 0;
-    //move head to start ['B', 0]
-    while (readRegisterPropertyValue(register.auxBufferTwo) <= 7){
+        resetRegisterProperty(registers.auxBufferOne);
+        swapBuffers();
         moveHeadLeft();
     }
+    //should end at ('alt' 7)
 
-    var returnable = returnMemBufferRL();
+    //reset our counter
+    resetRegisterProperty(registers.auxBufferTwo);
 
-    setHeadLocationToStart();
     
-    return returnable;
+    //will return a stringified bit sequence based on second arg
+    return  returnMemBufferL(); //head -= 7
+    //will Leave head at ['B', 7] if started on ['A', 7]
+    // will leave head at ['A', 7] if started on ['B', 7]
 };
 
 var NAND = function () {
@@ -107,50 +136,52 @@ var NAND = function () {
 // I can set head location at start of operations to allo for better concatenation of
 //operations? 
 
-    while (readRegisterPropertyValue(registers.auxBufferTwo) <= 7){
+    // while (readRegisterPropertyValue(registers.auxBufferTwo) <= 7){
 
-        incrementRegisterProperty(registers.auxBufferTwo);
+    //     incrementRegisterProperty(registers.auxBufferTwo);
 
-        if(getCurrentHeadValue()){
-            incrementRegisterProperty(registers.auxBufferOne);
-        }
-        moveHeadLeft();     //1
-        moveHeadLeft();     //2
-        moveHeadLeft();     //3
-        moveHeadLeft();     //4
-        moveHeadLeft();     //5
-        moveHeadLeft();     //6
-        moveHeadLeft();     //7
-        moveHeadLeft();     //8
-        if(readRegisterPropertyValue(auxBufferOne)){
-            if(getCurrentHeadValue()){
-                writeValAtCurrentHeadLocation(0);
-            }
-        } else {
-            writeValAtCurrentHeadLocation(1);
-        }
-        resetRegisterProperty(registers.auxBufferTwo);
-        moveHeadRight();    //1     
-        moveHeadRight();    //2      
-        moveHeadRight();    //3    
-        moveHeadRight();    //4
-        moveHeadRight();    //5
-        moveHeadRight();    //6
-        moveHeadRight();    //7
-    }
+    //     if(getCurrentHeadValue()){
+    //         incrementRegisterProperty(registers.auxBufferOne);
+    //     }
+    //     moveHeadLeft();     //1
+    //     moveHeadLeft();     //2
+    //     moveHeadLeft();     //3
+    //     moveHeadLeft();     //4
+    //     moveHeadLeft();     //5
+    //     moveHeadLeft();     //6
+    //     moveHeadLeft();     //7
+    //     moveHeadLeft();     //8
+    //     if(readRegisterPropertyValue(auxBufferOne)){
+    //         if(getCurrentHeadValue()){
+    //             writeValAtCurrentHeadLocation(0);
+    //         }
+    //     } else {
+    //         writeValAtCurrentHeadLocation(1);
+    //     }
+    //     resetRegisterProperty(registers.auxBufferTwo);
+    //     moveHeadRight();    //1     
+    //     moveHeadRight();    //2      
+    //     moveHeadRight();    //3    
+    //     moveHeadRight();    //4
+    //     moveHeadRight();    //5
+    //     moveHeadRight();    //6
+    //     moveHeadRight();    //7
+    // }
   
-    //reset auxBufferTwo to 0;
-    //move head to start ['B', 0]
-    while (readRegisterPropertyValue(register.auxBufferTwo) <= 7){
-        moveHeadLeft();
-    }
+    // //reset auxBufferTwo to 0;
+    // //move head to start ['B', 0]
+    // while (readRegisterPropertyValue(register.auxBufferTwo) <= 7){
+    //     moveHeadLeft();
+    // }
 
-    var returnable = returnMemBufferRL();
+    // var returnable = returnMemBufferRL();
 
-    setHeadLocationToStart();
+    // setHeadLocationToStart();
     
-    return returnable;
+    // return returnable;
 
+    AND();
+    return NOT();
 };
 
 var OR   = function () {
@@ -168,14 +199,34 @@ var XOR  = function () {
 var NXOR = function() {
 
 };
+var returnMemBufferL = function(){
+    //should start at 'a/b' 7,
+    //increment eight, print, end at 'b/a' 7
+    var returnString = '';
+
+    while (readRegisterPropertyValue(register.auxBufferTwo) <= 7){
+        incrementRegisterProperty(register.auxBufferTwo);
+        returnString =  getCurrentHeadValue().toString() + returnString 
+        moveHeadLeft();
+    }
+
+    //will end at a/b // b/a 7 
+    //equivalent to swap buffer;
+    return returnString
+
+}
+
 
 //convert eights bits of memory buffer to a string to send back;
 //begins at the head position and moves right 8 spaces;
 //to return a whole buffer, ensure the head is at index 0 in teh buffer
 //   before calling returnMemBuffer;
-var returnMemBufferRL = function(){
-    var returnString = ''
-// ******* WARNING **** USES AND RESETS AUXBUFFER2, and HEAD LOCATION
+var returnMemBufferR = function(){
+    var returnString = '';
+// ******* WARNING **** 
+// STANDARD READ IS LEFT TO RIGHT;
+// RETURN MEM BUFF R IS A RIGHT TO LEFT READ STARTING AT INDEX 0 IN A BUFFER
+//    AND ENDING AT INDEX 0 IN THE OTHER BUFFER
 //DO NOT CALL RETURN MEMORY BUFFER IF DATA IN AUXBUFFER2 IS NEEDED;
 
     while (readRegisterPropertyValue(register.auxBufferTwo) <= 7){
@@ -183,15 +234,6 @@ var returnMemBufferRL = function(){
         returnString += getCurrentHeadValue().toString();
         moveHeadRight();
     };
-
-// ************************************************
-// SET HEAD LOCATION TO Start of buffer ( A/B, 7), for next operation.
-//
-// ************************************************
-    while (readRegisterPropertyValue(register.auxBufferTwo) >=0){
-        decrementRegisterProperty(register.auxBufferTwo)
-        moveHeadRight();
-    }
 
     return returnString;
 }
@@ -238,7 +280,26 @@ var toGate = function(){
         }
     }
 }
+
+
+
+
+
+var swapBuffers = function() {
+    //swaps [from MemBuff A to MemBuff B]
+    moveHeadLeft();
+    moveHeadLeft();
+    moveHeadLeft();
+    moveHeadLeft();
+    moveHeadLeft(); 
+    moveHeadLeft();
+    moveHeadLeft();
+    moveHeadLeft();
+    return;
+}
+
 var setHeadLocationToStart = function () {
+//sets Head Buffer to ['A', 7]
     if (registers.headBufferLocation[0]){
         registers.headBufferLocation[0] = 0;  
     }
@@ -255,16 +316,13 @@ var setHeadLocationToStart = function () {
         registers.headBufferLocation[4] = 0;
     }
     if (registers.headBufferLocation[5]){
-        registers.headBufferLocation[5] = 0;
+        registers.headBufferLocation[5] = 1;
     }
     if (registers.headBufferLocation[6]){
-        registers.headBufferLocation[6] = 0;
+        registers.headBufferLocation[6] = 1;
     }
     if (registers.headBufferLocation[7]){
-        registers.headBufferLocation[7] = 0;
-    }
-    if (registers.headBufferLocation[8]){
-        registers.headBufferLocation[8] = 0;
+        registers.headBufferLocation[7] = 1;
     }
     return registers.headBufferLocation
 };
