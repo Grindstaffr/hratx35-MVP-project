@@ -1,5 +1,0 @@
-var JUMPTO = function () {
-
-};
-
-var 

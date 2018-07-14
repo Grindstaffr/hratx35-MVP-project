@@ -1,10 +1,10 @@
-const express = require('express')
-const assembly = require('./methods/assembly.js')
+const express     = require('express')
+const assembly    = require('./methods/assembly.js')
 const machineCode = require('./methods/machinecode.js')
-const bitmash = require('./methods/bitmash.js')
-const bodyParser = require('body-parser')
+const tonyCode    = require('./methods/bitmash.js')
+const bodyParser  = require('body-parser')
 
-const tony = express()
+const tony        = express()
 
 var registers =  {
   instruction        : [0,0,0,0,0,0,0,0,0],

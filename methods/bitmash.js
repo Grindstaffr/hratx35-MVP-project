@@ -231,14 +231,14 @@ var returnMemBufferR = function(){
 
 
 var toGate = function(){
-    var a = register.instruction[7];
-    var b = register.instruction[6];
-    var c = register.instruction[5];
-    var d = register.instruction[4];
-    var e = register.instruction[3];
-    var f = register.instruction[2];
-    var g = register.instruction[1];
-    var h = register.instruction[0];
+    var a = INST[7];
+    var b = INST[6];
+    var c = INST[5];
+    var d = INST[4];
+    var e = INST[3];
+    var f = INST[2];
+    var g = INST[1];
+    var h = INST[0];
 
 
     if (a){             //xxxxxxx1
