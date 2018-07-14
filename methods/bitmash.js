@@ -230,45 +230,52 @@ var returnMemBufferR = function(){
 }
 
 
-var toGate = function(){
-    var a = INST[7];
-    var b = INST[6];
-    var c = INST[5];
-    var d = INST[4];
-    var e = INST[3];
-    var f = INST[2];
-    var g = INST[1];
-    var h = INST[0];
-
-
-    if (a){             //xxxxxxx1
-        if (b){         //xxxxxx11
-            if (c){     //xxxxx111 * 
-                //CASE XNOR (2 ARGS)    
-            } else {    //xxxxx011 * 
-                //CASE NAND (2 ARGS)
-            }
-        } else {        //xxxxxx01
-            if (c){     //xxxxx101 * 
-                //CASE: NOR (2 ARGS)
-            } else {    //xxxxx001 * 
-                //CASE: ID MAP (1 ARGS)
-            }
-        }
-    } else {
-        if (b){         //xxxxxx10
-            if (c){     //xxxxx110 * 
-                //CASE: XOR (2 ARGS)    
-            } else {    //xxxxx010 * 
-                //CASE: AND (2 ARGS)
-            }
-        } else {        //xxxxxx00
-            if (c){     //xxxxx100 * 
-                //CASE: OR (2 ARGS)
-            } else {    //xxxxx000 * 
-                //CASE: NOT (1 ARG)
-            }
-        }
+var RUN = function(){
+    var PROG = PROPVAL(INST);
+    if (PROG = 0) {
+        return NOT();
+    }
+    if (PROG = 1) {
+        return ID();
+    }
+    if (PROG = 2) {
+        return AND();
+    }
+    if (PROG = 3) {
+        return NAND();
+    }
+    if (PROG = 4) {
+        return OR();
+    }
+    if (PROG = 5) {
+        return NOR();
+    }
+    if (PROG = 6) {
+        return XOR();
+    }
+    if (PROG = 7) {
+        return XNOR();
+    }
+    if (PROG = 8) {
+        return HEADLOC();
+    }
+    if (PROG = 9) {
+        return HEADVAL();
+    }
+    if (PROG = 10) {
+        return WRITE(0);
+    }
+    if (PROG = 11) {
+        return WRITE(1);
+    }
+    if (PROG = 255) {
+        return LEFT();
+    }
+    if (PROG = 127) {
+        return RIGHT();
+    }
+    if(PROG = 126) {
+        return SWAP();
     }
 }
 

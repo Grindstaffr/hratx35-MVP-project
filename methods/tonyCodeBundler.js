@@ -115,4 +115,52 @@ module.exports.rightPACK = function (arg1, arg2, address){
     var address     =  address.toString(2).padStart(8, '0')
     var packet = instruction + argumentOne + argumentTwo + address
     return packet;
+};
+
+module.exports.rightPACK = function (arg1, arg2, address){
+    var arg1    = arg1    || 0
+    var arg2    = arg2    || 0
+    var address = address || 0
+    var instruction = '01111111'
+    var argumentOne =  arg1.toString(2).padStart(8, '0')
+    var arg2        =  arg2.toString(2).padStart(8, '0')
+    var address     =  address.toString(2).padStart(8, '0')
+    var packet = instruction + argumentOne + argumentTwo + address
+    return packet;
+};
+
+module.exports.rightPACK = function (arg1, arg2, address){
+    var arg1    = arg1    || 0
+    var arg2    = arg2    || 0
+    var address = address || 0
+    var instruction = '01111111'
+    var argumentOne =  arg1.toString(2).padStart(8, '0')
+    var arg2        =  arg2.toString(2).padStart(8, '0')
+    var address     =  address.toString(2).padStart(8, '0')
+    var packet = instruction + argumentOne + argumentTwo + address
+    return packet;
+};
+
+module.exports.rightPACK = function (arg1, arg2, address){
+    var arg1    = arg1    || 0
+    var arg2    = arg2    || 0
+    var address = address || 0
+    var instruction = '01111111'
+    var argumentOne =  arg1.toString(2).padStart(8, '0')
+    var arg2        =  arg2.toString(2).padStart(8, '0')
+    var address     =  address.toString(2).padStart(8, '0')
+    var packet = instruction + argumentOne + argumentTwo + address
+    return packet;
+};
+
+module.exports.rightPACK = function (arg1, arg2, address){
+    var arg1    = arg1    || 0
+    var arg2    = arg2    || 0
+    var address = address || 0
+    var instruction = '01111111'
+    var argumentOne =  arg1.toString(2).padStart(8, '0')
+    var arg2        =  arg2.toString(2).padStart(8, '0')
+    var address     =  address.toString(2).padStart(8, '0')
+    var packet = instruction + argumentOne + argumentTwo + address
+    return packet;
 }; 
