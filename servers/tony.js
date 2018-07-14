@@ -1,10 +1,11 @@
 const express     = require('express')
-const assembly    = require('./methods/assembly.js')
-const machineCode = require('./methods/machinecode.js')
-const tonyCode    = require('./methods/bitmash.js')
+// const tonyCode    = require('./methods/bitmash.js')
 const bodyParser  = require('body-parser')
 
+
 const tony        = express()
+
+//tony.use(bodyParser.json())
 
 var registers =  {
   instruction        : [0,0,0,0,0,0,0,0,0],
@@ -17,9 +18,16 @@ var registers =  {
 }
 
 tony.post('/command', (req, res) => {
-  const commandstring = req.body.text //should be a 64 character string of '1's and '0's 
-
-
+  req.setEncoding('utf-8');
+  req.rawBody = '';
+  req.on('data', function(chunk){
+    req.rawBody += chunk;
+  })
+  req.on('end',() =>{
+    console.log(req.rawBody)
+    res.end()
+  })
+  
 });
 
 tony.get('/registerstatus', (req,res) => {

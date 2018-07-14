@@ -1,6 +1,30 @@
-var tony = 'tony'
+var yuri = 'yuri'
 
-var parse = function(string){
+module.exports.parse = function(string){
+  
+  var isValidChar = function(char, index){
+  var valid = ['1','2','3','4','5','6','7','8','9','0',
+               // 'a','b','c','d','e','f','g','h','i','j',
+               // 'k','l','m','n','o','p','q','r','s','t',
+               // 'u','v','w','x','y','z',
+               // 'A','B','C','D','E','F','G','H','I','J',
+               // 'K','L','M','N','O','P','Q','R','S','T',
+               // 'U','V','W','X','Y','Z',
+               ';','(',')','{','}','<','>','/','|','"',
+               '&','^','%','$','#','+','-','=','[',']',
+               ',','.',':','*','~',' ','@','x']
+  if(valid.includes(char)){
+    if(char === ' '){
+      return '';
+    }
+    return char;
+   
+  } else if (!valid.includes(char)) {
+    console.log(char)
+    return `!! INVALID CHARACTER AT POSITION ${index}`
+  }
+  }
+
   var output = ''
   for (var i = 0; i < string.length; i++){
     output += isValidChar(string[i], i)
@@ -303,38 +327,22 @@ var parse = function(string){
     return `!! INVALID EXPESSION, MISSING SECOND ARGUMENT`
     }
   }
-
+  if (!arg1){
+    arg1 = '00000000'
+  }
+  if(!arg2){
+    arg2 = '00000000'
+  }
   return {
     instruction : inst,
     argument1 : arg1,
-    arguement2 : arg2
+    argument2 : arg2
   }
 
 
 }
 
-var isValidChar = function(char, index){
-  var valid = ['1','2','3','4','5','6','7','8','9','0',
-               // 'a','b','c','d','e','f','g','h','i','j',
-               // 'k','l','m','n','o','p','q','r','s','t',
-               // 'u','v','w','x','y','z',
-               // 'A','B','C','D','E','F','G','H','I','J',
-               // 'K','L','M','N','O','P','Q','R','S','T',
-               // 'U','V','W','X','Y','Z',
-               ';','(',')','{','}','<','>','/','|','"',
-               '&','^','%','$','#','+','-','=','[',']',
-               ',','.',':','*','~',' ','@','x']
-  if(valid.includes(char)){
-    if(char === ' '){
-      return '';
-    }
-    return char;
-   
-  } else if (!valid.includes(char)) {
-    console.log(char)
-    return `!! INVALID CHARACTER AT POSITION ${index}`
-  }
-}
+
 
 // INT, BIN, ERR, AND, ORR, XOR, NOR, NOT, LFT, RGT, WRT, SWP, RTN 
 // >> , << , !!  , #  , :  , && , || ,  ~~ ,  &~,  |~ ,   |x,   |^,      @$,       @@, @0    , @1     , $$

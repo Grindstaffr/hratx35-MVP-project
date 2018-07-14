@@ -1,13 +1,23 @@
 const express    = require('express')
-const bundle     = require('./methods/tonyCodeBundler.js')
+// const bundle     = require('./methods/tonyCodeBundler.js')
+const compile = require('../methods/compileParse.js')
 const bodyParser = require('body-parser')
+const request = require('request')
 
-yuri.use(bodyParser.json())
 
 const yuri = express()
+yuri.use(bodyParser.json())
 
 yuri.post('/compile', (req, res) => {
-  parsereq.body
+  var body = req.body.string
+  var tonyCode = compile.parse(body).instruction + compile.parse(body).argument1 + compile.parse(body).argument2 
+  var options = { json: false, body : tonyCode, method: 'POST'}
+  request('http://localhost:7049/command', options, (err, res, body) => {
+    if (err){
+      console.error(err)
+    }
+  })
+  res.end()
 })
 
 yuri.get('/')

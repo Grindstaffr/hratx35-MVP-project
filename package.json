@@ -19,6 +19,8 @@
   "homepage": "https://github.com/Grindstaffr/hratx35-MVP-project#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "jquery": "^3.3.1",
+    "request": "^2.87.0"
   }
 }
