@@ -3,32 +3,36 @@ var tony = 'tony'
 var parse = function(string){
   var output = ''
   for (var i = 0; i < string.length; i++){
-    output + valid(string[i], i)
+    output += isValidChar(string[i], i)
   }
+  console.log(output)
   var arg1
   var arg2
   var inst
   var count = 0;
   var index = 0;
-  var reqArgs
+  var reqArg2
   var parenBlockOpen = false;
   if (output[index] !== '('){
+    
     return '!! INVALID EXPRESSION, NO OPEN'
   } else {
     count ++;
     index ++;
+    parenBlockOpen = true
     while (count > 0){
       if(output[index] === undefined){
         return '!! INVALID EXPRESSION, NO CLOSE'
       }
       if (output[index] === '('){
+        
         count ++;
-        var parenBlockOpen = true;
+        parenBlockOpen = true;
         index ++;
       };
       if (output[index] === ')'){
         count --;
-        index ++:
+        index ++;
       };
       if (output[index] === '#'){
         if (!parenBlockOpen){
@@ -36,6 +40,7 @@ var parse = function(string){
         }
         var nums = ['0','1','2','3','4','5','6','7','8','9'] 
         var num  = '';
+        index ++;
         while (output[index] !== ')'){
           if (nums.includes(output[index])){
             num += output[index];
@@ -46,13 +51,15 @@ var parse = function(string){
         }
         parenBlockOpen = false
         if (!arg1){
-          var num =  num.parseInt().toString(2).padStart(8, '0');
+          console.log(num)
+          var num =  parseInt(num).toString(2).padStart(8, '0');
           if (num.length > 8){
             return `!! INPUT AT POSITION ${index - 1} TOO LARGE`;
           }
           arg1 = num;
         } else if (!arg2){
-          var num = num.parseInt().toString(2).padStart(8, '0');
+          console.log(num)
+          var num = parseInt(num).toString(2).padStart(8, '0');
           if (num.length > 8){
             return `!! INPUT AT POSITION ${index - 1} TOO LARGE`;
           }
@@ -70,6 +77,7 @@ var parse = function(string){
         var nums = ['0','1'];
         var num = '';
         var start = index
+        index ++;
         while (output[index] !== ')'){
           
           if (nums.includes(output[index])){
@@ -105,6 +113,7 @@ var parse = function(string){
         if (!parenBlockOpen){
           return `!! PARENTHESIS FULL AT INDEX ${index}, OPEN NEW PARENTHESIS`
         }
+        index ++;
         if(!arg1){
           return `!! INVALID EXPRESSION, MISSING ARG`
         }
@@ -123,6 +132,7 @@ var parse = function(string){
          if (!parenBlockOpen){
           return `!! PARENTHESIS FULL AT INDEX ${index}, OPEN NEW PARENTHESIS`
         }
+        index ++;
         if(inst){
           return `!! INVALID EXPRESSION, TOO MANY COMMANDS`
         }
@@ -162,7 +172,7 @@ var parse = function(string){
       }
 
 
-      if(output[index] === '|'){ // OR block
+      if(output[index] === '|'){ // OR block\]
         if (!parenBlockOpen){
           return `!! PARENTHESIS FULL AT INDEX ${index}, OPEN NEW PARENTHESIS`
         }
@@ -319,7 +329,9 @@ var isValidChar = function(char, index){
       return '';
     }
     return char;
-  } else {
+   
+  } else if (!valid.includes(char)) {
+    console.log(char)
     return `!! INVALID CHARACTER AT POSITION ${index}`
   }
 }
