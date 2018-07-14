@@ -232,49 +232,49 @@ var returnMemBufferR = function(){
 
 var RUN = function(){
     var PROG = PROPVAL(INST);
-    if (PROG = 0) {
+    if (PROG === 128) {
         return NOT();
     }
-    if (PROG = 1) {
+    if (PROG === 129) {
         return ID();
     }
-    if (PROG = 2) {
+    if (PROG === 2) {
         return AND();
     }
-    if (PROG = 3) {
+    if (PROG === 3) {
         return NAND();
     }
-    if (PROG = 4) {
+    if (PROG === 4) {
         return OR();
     }
-    if (PROG = 5) {
+    if (PROG === 5) {
         return NOR();
     }
-    if (PROG = 6) {
+    if (PROG === 6) {
         return XOR();
     }
-    if (PROG = 7) {
+    if (PROG === 7) {
         return XNOR();
     }
-    if (PROG = 8) {
+    if (PROG === 136) {
         return HEADLOC();
     }
-    if (PROG = 9) {
+    if (PROG === 137) {
         return HEADVAL();
     }
-    if (PROG = 10) {
+    if (PROG === 138) {
         return WRITE(0);
     }
-    if (PROG = 11) {
+    if (PROG === 139) {
         return WRITE(1);
     }
-    if (PROG = 255) {
+    if (PROG === 255) {
         return LEFT();
     }
-    if (PROG = 127) {
+    if (PROG === 254) {
         return RIGHT();
     }
-    if(PROG = 126) {
+    if(PROG === 253) {
         return SWAP();
     }
 }

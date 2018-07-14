@@ -25,11 +25,24 @@ module.exports.parse = function(string){
   }
   }
 
+  var padOrTruncate = function(string, length, padChar){
+    if (string.length > length){
+      return string.slice(0, length -1);
+    } else if (string.length === length){
+      return string;
+    } else {
+      var out = string
+      while (out.length < length){
+        out = padChar + out
+      }
+      return out;
+    }
+  }
+
   var output = ''
   for (var i = 0; i < string.length; i++){
     output += isValidChar(string[i], i)
   }
-  console.log(output)
   var arg1
   var arg2
   var inst
@@ -75,19 +88,19 @@ module.exports.parse = function(string){
         }
         parenBlockOpen = false
         if (!arg1){
-          console.log(num)
-          var num =  parseInt(num).toString(2).padStart(8, '0');
+          var num =  parseInt(num).toString(2);
           if (num.length > 8){
             return `!! INPUT AT POSITION ${index - 1} TOO LARGE`;
           }
-          arg1 = num;
+          arg1 = padOrTruncate(num, 8, '0');
         } else if (!arg2){
-          console.log(num)
-          var num = parseInt(num).toString(2).padStart(8, '0');
+     
+          var num = parseInt(num).toString(2);
           if (num.length > 8){
             return `!! INPUT AT POSITION ${index - 1} TOO LARGE`;
           }
-          arg2 = num; 
+
+          arg2 = padOrTruncate(num, 8, '0'); 
         } else if (arg1 && arg2){
           return `!! INVALID EXPRESSION, TOO MANY ARGS`;
         }
@@ -119,12 +132,12 @@ module.exports.parse = function(string){
           if (num.length > 8){
             return `!! INPUT AT POSITION ${index - 1} TOO LARGE`;
           }
-          arg1 = num.padStart(8,'0')
+          arg1 = padOrTruncate(num, 8, '0'); 
         } else if (!arg2){
           if (num.length > 8){
             return `!! INPUT AT POSITION ${index - 1} TOO LARGE`;
           }
-          arg2 = num.padStart(8,'0')
+          arg2 = padOrTruncate(num, 8, '0'); 
         } else if (arg1 && arg2){
           return `!! INVALID EXPRESSION, TOO MANY ARGS`;
         }
@@ -145,7 +158,7 @@ module.exports.parse = function(string){
           return `!! INVALID EXPRESSION, TOO MANY COMMANDS`
         }
         if (output[index] === '~'){
-          inst = '000000000'
+          inst = '100000000'
           index ++;
           parenBlockOpen = false;
         }
@@ -161,7 +174,7 @@ module.exports.parse = function(string){
           return `!! INVALID EXPRESSION, TOO MANY COMMANDS`
         }
         if (output[index] === '$'){
-          inst = '000000001'
+          inst = '100000001'
           index ++;
           parenBlockOpen = false;
         }
@@ -247,22 +260,22 @@ module.exports.parse = function(string){
           return `!! INVALID EXPRESSION, TOO MANY ARGS`
         }
         if (output[index] === '@'){ //HEADLOC
-          inst = '00001000'
+          inst = '10001000'
           index ++;
           parenBlockOpen = false;
         } 
         if (output[index] === '$'){ //HEADVAL
-          inst = '00001001'
+          inst = '10001001'
           index ++;
           parenBlockOpen = false;
         }
         if (output[index] === '0'){ //WRITE0
-          inst = '00001010'
+          inst = '10001010'
           index ++;
           parenBlockOpen = false;
         }
         if (output[index] === '1'){ //WRITE(1)
-          inst = '00001011'
+          inst = '10001011'
           index ++;
           parenBlockOpen = false;
         }
@@ -300,12 +313,12 @@ module.exports.parse = function(string){
           return `!! INVALID EXPRESSION, MISSING ARG`
         }
         if (output[index] === '>'){ //RIGHT
-          inst = '01111111'
+          inst = '11111110'
           index ++;
           parenBlockOpen = false;
         }
         if (output[index] === '<'){ //SWAP
-          inst = '01111110'
+          inst = '11111101'
           index ++;
           parenBlockOpen = false;
         } 
