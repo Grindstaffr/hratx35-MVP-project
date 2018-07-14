@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server-dev": "nodemon server/index.js"
+    "server-deva": "nodemon server/tony.js",
+    "server-devb": "nodemon server/yuri.js",
+    "server-devc": "nodemon server/ralph.js",
+    "react-dev"  : "webpack -d --watch"
+ 
   },
   "repository": {
     "type": "git",
@@ -17,10 +21,19 @@
     "url": "https://github.com/Grindstaffr/hratx35-MVP-project/issues"
   },
   "homepage": "https://github.com/Grindstaffr/hratx35-MVP-project#readme",
+  "devDependencies": {
+    "babel-core": "^6.23.1",
+    "babel-loader": "^6.3.2",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-react": "^6.23.0",
+    "webpack": "^2.2.1"
+  },
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
     "jquery": "^3.3.1",
-    "request": "^2.87.0"
+    "request": "^2.87.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
   }
 }

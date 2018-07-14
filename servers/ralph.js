@@ -1,23 +1,23 @@
 const express = require('express')
 const request = require('request')
+const bodyParser = require('body-parser')
 const ralph = express()
+ralph.use(bodyParser.json())
 
 
+ralph.use(express.static(__dirname + '/../client/react-client/dist'))
 //handle root request on server
-ralph.get('/', (req, res) =>{
-    //serve up some html  
-  
-  res.end('somehtml')
-
-})
 
 ralph.post('/', (req, res) => {
-  var options = {json : true, body : clientString, method: 'POST'}
-  request('http://localhost:7777/compile', options, (err, res, body) => {
+  console.log(req.body)
+  var options = {json : true, body : 'a', method: 'POST'}
+  request('http://localhost:7777/compile', options, (err, response, body) => {
   if (err){
     console.error(err)
   }
 
+    var data = JSON.stringify(body)
+    res.end(data)
 })
 
 })

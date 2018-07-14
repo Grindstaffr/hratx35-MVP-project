@@ -21,7 +21,7 @@ yuri.post('/compile', (req, res) => {
     }
     console.log(body)
   })
-  res.end() 
+  res.end(body) 
 })
 
 yuri.get('/')
