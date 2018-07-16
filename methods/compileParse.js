@@ -158,7 +158,7 @@ module.exports.parse = function(string){
           return `!! INVALID EXPRESSION, TOO MANY COMMANDS`
         }
         if (output[index] === '~'){
-          inst = '100000000'
+          inst = '00000000'
           index ++;
           parenBlockOpen = false;
         }
@@ -174,7 +174,7 @@ module.exports.parse = function(string){
           return `!! INVALID EXPRESSION, TOO MANY COMMANDS`
         }
         if (output[index] === '$'){
-          inst = '100000001'
+          inst = '00000001'
           index ++;
           parenBlockOpen = false;
         }

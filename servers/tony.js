@@ -23,7 +23,6 @@ tony.post('/command', (req, res) => {
     req.rawBody += chunk;
   })
   req.on('end',() =>{
-    console.log(req.rawBody)
     if (req.rawBody[0] === '1'){
       for (i = 0; i < 8; i++){
         registers.instruction[i] = Number(req.rawBody[i])
@@ -39,7 +38,9 @@ tony.post('/command', (req, res) => {
   
     }
     console.log(registers.instruction);
-    console.log(PROPVAL(INST))
+    console.log(registers.memoryBufferA);
+    console.log(registers.memoryBufferB);
+    // console.log(PROPVAL(INST))
     var ran = RUN().toString()
     
     //console.log(registers.memoryBufferA);
@@ -84,16 +85,24 @@ var MEMB = registers.memoryBufferB;
 
 var NOT  = function () { 
 
+
     while (PROPVAL(AUX1) <= 7){
+sleep(200)
+console.log(MEMA , MEMB)
+
     //we assume AUX1 is at 00000000 when we start;
     //therefore whe should run 
         if(HEADVAL()){
+                   
             WRITE(0);
         } else {
+                   
             WRITE(1);
         }
         //move head left
+              
         LEFT(); 
+              
         PROPINC(AUX1);
     } // these while loops teminate on [a/b//b/a 7]
     //head should shift left until it is at [B 7]
@@ -108,6 +117,8 @@ var NOT  = function () {
     //will Leave head at ['B', 7] if started on ['A', 7]
     // will leave head at ['A', 7] if started on ['B', 7]
     //SWAP();
+
+          
     return RTRN();
 };
 
@@ -145,26 +156,35 @@ var AND  = function () {
                             // ends at B7
 
     while (PROPVAL(AUX2) <= 7){
-
+sleep(200)
+console.log(MEMA , MEMB)
         PROPINC(AUX2);
 
         if(HEADVAL()){
+            
             PROPINC(AUX1);
         }
+            
         SWAP();
 
         if(PROPVAL(AUX1)){
             if(HEADVAL()){
+            
                 WRITE(1);
             } else {
+                
                 WRITE(0);
             }
+                
             PROPDEC(AUX1);
         } else {
+            
             WRITE(0);
         }
         
+            
         SWAP();
+            
         LEFT();
     }
     //should end at ('alt' 7)
@@ -204,6 +224,8 @@ var NOR  = function (){
 var XOR  = function () {
  
     while (PROPVAL(AUX2) <= 7){
+sleep(200)
+console.log(MEMA , MEMB)
         PROPINC(AUX2);
         
         if (HEADVAL()){
@@ -243,6 +265,7 @@ var XNOR = function() {
 
 };
 var RTRN = function(){
+    // console.log('returning out')
     //should start at 'a/b' 7,
     //increment eight, print, end at 'b/a' 7
     var returnString = '';
@@ -255,7 +278,7 @@ var RTRN = function(){
     }
 
     PROPRESET(AUX2)
-
+console.log(MEMA , MEMB)
     //will end at a/b // b/a 7 
     //equivalent to swap buffer;
     return returnString
@@ -287,11 +310,11 @@ var returnMemBufferR = function(){
 
 var RUN = function(){
     var PROG = PROPVAL(INST);
-    if (PROG === 128) {
+    if (PROG === 0) {
         console.log('not running')
         return NOT();
     }
-    if (PROG === 129) {
+    if (PROG === 1) {
         console.log('id running')
         return ID();
     }
@@ -396,6 +419,7 @@ var HEADRESET = function () {
 
 
 var HEADVAL = function () {
+    // console.log('Reading Head Value')
 if (HEAD[7]){                     //xxxxxxx1
         if (HEAD[6]){             //xxxxxx11
             if (HEAD[5]){         //xxxxx111 *   head at index 7 
@@ -459,6 +483,7 @@ if (HEAD[7]){                     //xxxxxxx1
     }
 };
 var HEADLOC = function () {
+    // console.log('checking head location')
 if (HEAD[7]){                     //xxxxxxx1
         if (HEAD[6]){             //xxxxxx11
             if (HEAD[5]){         //xxxxx111 *   head at index 7 
@@ -523,6 +548,7 @@ if (HEAD[7]){                     //xxxxxxx1
 };
 
 var WRITE = function (num   /* 0 xor 1 */){
+        // console.log('writing ' + num)
     var headloc = HEADLOC();
     if (headloc[0] === 'A'){
         MEMA[headloc[1]] = num;
@@ -576,6 +602,7 @@ var WRITE = function (num   /* 0 xor 1 */){
 // 
 
 var LEFT = function ()  {
+    // console.log('moving head left')
 if (HEAD[7]){                     //xxxxxxx1
         if (HEAD[6]){             //xxxxxx11
             if (HEAD[5]){         //xxxxx111 *   head at index 7 
@@ -672,6 +699,7 @@ if (HEAD[7]){                     //xxxxxxx1
 
 
 var RIGHT = function ()  {
+    // console.log('moving head right')
 if (HEAD[7]){                     //xxxxxxx1
         if (HEAD[6]){             //xxxxxx11
             if (HEAD[5]){         //xxxxx111 *   head at index 7 
@@ -768,7 +796,8 @@ if (HEAD[7]){                     //xxxxxxx1
 
 //change the state of the register by incrementing a given register property
 //performs a binary add one operation (will overflow register)
-var PROPINC = function (regProp){  
+var PROPINC = function (regProp){
+        // console.log('changing state')  
     var i = regProp.length-1;
     while (regProp[i] === 1 && i >= 0){
         regProp[i] = 0;
@@ -783,6 +812,7 @@ var PROPINC = function (regProp){
 //change the state of the register by decrementing a given register property
 //performs a binary subtract one on operation (will overflow register to reset)
 var PROPDEC = function (regProp){ 
+        // console.log('changing state')
     var i = regProp.lastIndexOf(1);
     debugger;
     if (!(i === -1)) {
@@ -798,6 +828,7 @@ var PROPDEC = function (regProp){
 
 //read the current state of a given property value
 var PROPVAL = function (regProp){ 
+        // console.log('assessing state')
     var value = 0; 
     if (regProp[7]){
         value += 1;
@@ -827,6 +858,7 @@ var PROPVAL = function (regProp){
 }
 
 var PROPRESET = function (regProp){
+        // console.log('resetting state')
     regProp[7] = 0;
     regProp[6] = 0;
     regProp[5] = 0;
@@ -842,4 +874,13 @@ var RESETAUX = function () {
     PROPRESET(AUX1);
     PROPRESET(AUX2);
     return 1;
+}
+
+var sleep = function (milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
 }
