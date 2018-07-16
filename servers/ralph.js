@@ -9,7 +9,7 @@ ralph.use(express.static(__dirname + '/../client/react-client/dist'))
 //handle root request on server
 
 ralph.post('/', (req, res) => {
-  console.log(req.body)
+  console.log('sending ' + JSON.stringify(req.body))
   var options = {json : true, body : req.body, method: 'POST'}
   request('http://localhost:7777/compile', options, (err, resp, bod) => {
   if (err){
@@ -18,7 +18,7 @@ ralph.post('/', (req, res) => {
     // console.log(resp)
     res.setStatus = 200
     var goog = JSON.stringify(bod)
-    console.log(goog)
+    console.log('recieved' + goog)
     res.end(bod)
 })
   
