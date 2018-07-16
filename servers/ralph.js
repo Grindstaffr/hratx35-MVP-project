@@ -10,15 +10,19 @@ ralph.use(express.static(__dirname + '/../client/react-client/dist'))
 
 ralph.post('/', (req, res) => {
   console.log(req.body)
-  var options = {json : true, body : 'a', method: 'POST'}
-  request('http://localhost:7777/compile', options, (err, response, body) => {
+  var options = {json : true, body : req.body, method: 'POST'}
+  request('http://localhost:7777/compile', options, (err, resp, bod) => {
   if (err){
     console.error(err)
   }
-
-    var data = JSON.stringify(body)
-    res.end(data)
+    // console.log(resp)
+    res.setStatus = 200
+    var goog = JSON.stringify(bod)
+    console.log(goog)
+    res.end(bod)
 })
+  
+  // res.end()
 
 })
 

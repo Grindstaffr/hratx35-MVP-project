@@ -22,26 +22,32 @@ class Pierre extends React.Component {
    
     this.setState({
       inputstring : e.target.value
-    })
-    console.log(this.state)
+    }, () =>{console.log(this.state)})
+    
   }
 
-  send (e) {
-    e.stopImmediatePropegation()
-    var data = JSON.stringify({ string : this.state.inputstring})
+  send () {
+    //e.stopPropegation()
+    var input = JSON.stringify({ string : this.state.inputstring})
     console.log(this.state)
     $.ajax({
-      url : "http://localhost:7007",
+      url : "http://localhost:7007/",
       method: "POST",
-      data: data,
-      dataType: 'application/json',
+      data: input,
+      dataType: 'json',
+      contentType : 'application/json',
       success: (data) => {
         this.setState({
           outputstring : data
         })
       },
       error: (err) => {
-        console.error(err)
+        this.setState({
+          outputstring : err.responseText
+
+        })
+        console.log('I am throwing an error')
+        console.log(err)
       }
     })
   }

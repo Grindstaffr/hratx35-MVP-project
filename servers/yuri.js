@@ -10,18 +10,21 @@ yuri.use(bodyParser.json())
 
 yuri.post('/compile', (req, res) => {
   var body = req.body.string
+
   if (typeof compile.parse(body) === 'string'){
     res.end(compile.parse(body))
   }
   var tonyCode = compile.parse(body).instruction + compile.parse(body).argument1 + compile.parse(body).argument2 
   var options = { json: false, body : tonyCode, method: 'POST'}
-  request('http://localhost:7049/command', options, (err, res, body) => {
-    if (err){
-      console.error(err)
-    }
-    console.log(body)
-  })
-  res.end(body) 
+  if (!(typeof compile.parse(body) === 'string')){
+    request('http://localhost:7049/command', options, (err, resp, bod) => {
+      if (err){
+        console.error(err)
+      }
+      var goog = JSON.stringify(bod)
+      console.log(bod)
+      res.end(goog) 
+    })}
 })
 
 yuri.get('/')
